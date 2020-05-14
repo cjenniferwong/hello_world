@@ -1,4 +1,6 @@
+"""Test to make sure that our solution works for the sql implementations"""
 from .solution import create_analysis_table
+from . import solution
 from .. import models
 from ..resources import db
 import unittest
@@ -6,39 +8,30 @@ import unittest
 
 class TestSolution(unittest.TestCase):
 
-    @classmethod
-    def setUpClass(cls):
-        print('set up class')
-        pass
-
-    def tearDownClass(cls):
-        print('tear down class')
-        pass
-
     def setUp(self):
         print('set up')
-        pass
+        session = db.make_session()
+        session.query(models.SQLSolutionRow).delete()
+        session.commit()
 
     def tearDown(self):
         print('tear down')
-        pass
+        session = db.make_session()
+        session.query(models.SQLSolutionRow).delete()
+        session.commit()
+
+    def test_get_summary(self):
+        """test that it returns an empty dictionary if asked to summarize empty results list"""
+        result = solution.get_summary([])
+        self.assertEqual(result, {})
 
     def test_solution(empty_sql_solution_table):
         """ Test our solution worked! Right now just tests we wrote a dummy row."""
-        print('test sql solution')
         create_analysis_table()
-
         session = db.make_session()
-
         rows = session.query(models.SQLSolutionRow).all()
-
-        assert len(rows) == 1
-
-        row = rows[0]
-
-        assert row.primary_diag_code == "1234.56"
-        assert row.age_bracket == "5-9"
-        assert row.num_unique_patients == 327
+        print(f'{len(rows)} rows added')
+        assert len(rows) >= 1
 
 
 if __name__ == '__main__':

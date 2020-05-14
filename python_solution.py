@@ -2,7 +2,7 @@ from typing import Iterable
 
 from .. import models
 from ..resources import db
-from ..jennwong_files import Services, get_summary
+from ..utils import Services, get_summary
 
 
 # These two functions should be the limit of your interaction with the ORM in this part
@@ -46,14 +46,5 @@ def create_analysis_table():
             summary_row = models.PythonSolutionRow(
                 primary_diag_code=code, age_bracket=age_bracket, num_unique_patients=len(set(patient_list)))
             summary_rows.append(summary_row)
-
-    # Example writing dummy answer row
-    write_summary_rows([
-        models.PythonSolutionRow(
-            primary_diag_code="1234.56",
-            age_bracket="0-4",
-            num_unique_patients=123
-        )
-    ])
 
     write_summary_rows(summary_rows)

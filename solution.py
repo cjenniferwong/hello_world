@@ -2,7 +2,7 @@ from pathlib import Path
 from typing import List
 
 from sqlalchemy import text
-from ..jennwong_files import Services, get_summary
+from ..utils import Services, get_summary
 from ..resources import db
 
 
@@ -23,7 +23,6 @@ def create_analysis_table():
         # Write some sql files, place them in the resources dir,
         # and include them in these functions to execute.
 
-        # rewrite to use the functions provided
         executed_query = connection.execute(resource_text("sql_query.sql")).fetchall()
 
         results = [Services(record[0], record[1], record[2], record[3], record[4])
@@ -31,8 +30,8 @@ def create_analysis_table():
         code_dict = get_summary(results)
         for code, age_bracket_dict in code_dict.items():
             for age_bracket, patient_list in age_bracket_dict.items():
-                connection.execute(
-                    f"INSERT INTO SQL_SOLUTION VALUES ('{code}', '{age_bracket}', {len(set(patient_list))});")
+                insert_statement = f"INSERT INTO SQL_SOLUTION VALUES ('{code}', '{age_bracket}', {len(set(patient_list))});"
+                connection.execute(insert_statement)
 
 
 def create_udfs(connection, udf_list):
